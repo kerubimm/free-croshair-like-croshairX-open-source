@@ -1,0 +1,88 @@
+# ================================================================
+# 🎯 Crosshair Open Source - by [Kerubimm_]
+#
+# Small Python program that displays a crosshair
+# centered on the screen. Useful for games or visual tests.
+#
+# ✅ Free to use and modify (MIT License)
+# 💡 Can be converted to an .exe file for easy use without Python
+# ====================================================================
+import tkinter as tk
+from tkinter.colorchooser import askcolor
+
+class CrosshairApp:
+    def __init__(self, root):
+        self.root = root
+        self.size = 10
+        self.color = "white"
+        self.shape = "cross"
+        self.line_width = 1
+        
+        self.root.overrideredirect(True)
+        self.root.geometry("100x100+{}+{}".format(self.root.winfo_screenwidth()//2-50, self.root.winfo_screenheight()//2-50))
+        self.root.wm_attributes("-topmost", True)
+        self.root.wm_attributes("-transparentcolor", "black")
+        self.root.configure(bg="black")
+        
+        self.canvas = tk.Canvas(root, width=100, height=100, bg="black", highlightthickness=0)
+        self.canvas.pack()
+        self.draw_crosshair()
+        self.create_control_window()
+
+    def draw_crosshair(self):
+        self.canvas.delete("all")
+        if self.shape == "cross":
+            self.canvas.create_line(50, 50 - self.size, 50, 50 + self.size, fill=self.color, width=self.line_width)
+            self.canvas.create_line(50 - self.size, 50, 50 + self.size, 50, fill=self.color, width=self.line_width)
+        elif self.shape == "circle":
+            self.canvas.create_oval(50 - self.size, 50 - self.size, 50 + self.size, 50 + self.size, outline=self.color, width=self.line_width)
+        elif self.shape == "point":
+            self.canvas.create_oval(50 - self.size//2, 50 - self.size//2, 50 + self.size//2, 50 + self.size//2, fill=self.color, outline=self.color, width=self.line_width)
+        elif self.shape == "square":
+            self.canvas.create_rectangle(50 - self.size, 50 - self.size, 50 + self.size, 50 + self.size, outline=self.color, width=self.line_width)
+        elif self.shape == "diamond":
+            self.canvas.create_polygon(50, 50 - self.size, 50 + self.size, 50, 50, 50 + self.size, 50 - self.size, 50, outline=self.color, width=self.line_width)
+
+    def change_shape(self, shape):
+        self.shape = shape
+        self.draw_crosshair()
+
+    def change_color(self):
+        color = askcolor()[1]
+        if color:
+            self.color = color
+            self.draw_crosshair()
+
+    def change_size(self, delta):
+        self.size = max(2, self.size + delta)
+        self.draw_crosshair()
+
+    def change_thickness(self):
+        self.line_width = (self.line_width % 5) + 1
+        self.draw_crosshair()
+
+    def close_app(self):
+        self.root.destroy()
+        self.control_window.destroy()
+
+    def create_control_window(self):
+        self.control_window = tk.Toplevel(self.root)
+        self.control_window.title("Contrôle du Viseur")
+        self.control_window.geometry("250x300")
+        self.control_window.configure(bg="gray")
+        
+        shapes = [("Croix", "cross"), ("Cercle", "circle"), ("Point", "point"), ("Carré", "square"), ("Losange", "diamond")]
+        for text, shape in shapes:
+            tk.Button(self.control_window, text=text, command=lambda s=shape: self.change_shape(s)).pack(fill="x", pady=2)
+        
+        tk.Button(self.control_window, text="Changer Couleur", command=self.change_color).pack(fill="x", pady=2)
+        tk.Button(self.control_window, text="Augmenter Taille", command=lambda: self.change_size(2)).pack(fill="x", pady=2)
+        tk.Button(self.control_window, text="Diminuer Taille", command=lambda: self.change_size(-2)).pack(fill="x", pady=2)
+        tk.Button(self.control_window, text="Changer Épaisseur", command=self.change_thickness).pack(fill="x", pady=2)
+        
+        tk.Button(self.control_window, text="Fermer", command=self.close_app, fg="red").pack(fill="x", pady=2)
+        
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = CrosshairApp(root)
+    root.mainloop()
