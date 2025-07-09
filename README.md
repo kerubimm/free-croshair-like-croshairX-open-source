@@ -1,4 +1,5 @@
 # free-croshair-like-croshairX-open-source
+## if you have any question dm me here or add me : ' allucardson ' on discord ➤ https://discord.gg/cgKa4R7GZf or dm me on tiktok : kerubimm_
 A customizable crosshair developed in Python to improve accuracy in your FPS games. This open source project is simple, lightweight, and easy to modify to suit your needs.
 📄 Credits & License
 This project was created by [Kerubimm_].
